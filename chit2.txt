@@ -1,0 +1,37 @@
+//Chit No. 2 — SPPU — LP-I
+
+//Design suitable data structures and implement Pass-II of a two-pass assembler for a pseudo-machine.
+//Implementation should consist of a few instructions from each category and a few assembler directives.
+//The output of Pass-I (intermediate code file and symbol table) should be input for Pass-II.
+
+import java.io.*;
+import java.util.*;
+
+class Pass2Assembler {
+    public static void main(String[] args) throws Exception {
+        BufferedReader inter = new BufferedReader(new FileReader("intermediate.txt"));
+        BufferedReader symtab = new BufferedReader(new FileReader("symtab.txt"));
+        BufferedWriter machine = new BufferedWriter(new FileWriter("machinecode.txt"));
+
+        Map<String, Integer> symbolTable = new HashMap<>();
+        String line;
+        while ((line = symtab.readLine()) != null) {
+            String[] tokens = line.split("\\s+");
+            symbolTable.put(tokens[0], Integer.parseInt(tokens[1]));
+        }
+
+        while ((line = inter.readLine()) != null) {
+            String[] tokens = line.split("\\s+");
+            // Example: Replace symbol with address if present
+            if (tokens.length > 2 && symbolTable.containsKey(tokens[2])) {
+                tokens[2] = String.valueOf(symbolTable.get(tokens[2]));
+            }
+            machine.write(String.join(" ", tokens) + "\n");
+        }
+
+        inter.close();
+        symtab.close();
+        machine.close();
+        System.out.println("Pass-2 complete. Machine code generated.");
+    }
+}

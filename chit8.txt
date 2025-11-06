@@ -1,0 +1,37 @@
+//Chit No. 8 — SPPU — LP-I
+
+//Write a program to simulate CPU Scheduling Algorithm: Round Robin
+
+import java.util.*;
+
+class Process {
+    int id, burst, remaining;
+    Process(int id, int burst) {
+        this.id = id;
+        this.burst = burst;
+        this.remaining = burst;
+    }
+}
+
+public class RoundRobin {
+    public static void main(String[] args) {
+        int[] bursts = {5, 3, 8, 6}; // burst times of processes
+        int quantum = 3;
+        Queue<Process> queue = new LinkedList<>();
+        for (int i = 0; i < bursts.length; i++) queue.add(new Process(i + 1, bursts[i]));
+
+        int time = 0;
+        while (!queue.isEmpty()) {
+            Process p = queue.poll();
+            if (p.remaining > quantum) {
+                System.out.println("Process " + p.id + " executed from " + time + " to " + (time + quantum));
+                p.remaining -= quantum;
+                time += quantum;
+                queue.add(p);
+            } else {
+                System.out.println("Process " + p.id + " executed from " + time + " to " + (time + p.remaining));
+                time += p.remaining;
+            }
+        }
+    }
+}

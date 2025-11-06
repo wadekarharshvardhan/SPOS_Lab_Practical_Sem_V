@@ -1,0 +1,43 @@
+//Chit No. 1 — SPPU — LP-I
+
+//Design suitable data structures and implement Pass-I of a two-pass assembler for a pseudo-machine.
+//Implementation should consist of a few instructions from each category and a few assembler directives.
+
+
+import java.io.*;
+import java.util.*;
+
+class Pass1Assembler {
+    public static void main(String[] args) throws Exception {
+        BufferedReader input = new BufferedReader(new FileReader("input.txt"));
+        BufferedWriter symtab = new BufferedWriter(new FileWriter("symtab.txt"));
+        BufferedWriter inter = new BufferedWriter(new FileWriter("intermediate.txt"));
+
+        Map<String, Integer> symbolTable = new HashMap<>();
+        int locctr = 0;
+        String line;
+        
+        while ((line = input.readLine()) != null) {
+            String[] tokens = line.split("\\s+");
+            if (tokens.length == 0) continue;
+            if (tokens[0].equals("START")) {
+                locctr = Integer.parseInt(tokens[1]);
+                continue;
+            }
+            if (!tokens[0].equals("")) { // Label present
+                symbolTable.put(tokens[0], locctr);
+            }
+            inter.write(locctr + " " + line + "\n");
+            locctr += 1;
+        }
+
+        for (String symbol : symbolTable.keySet()) {
+            symtab.write(symbol + " " + symbolTable.get(symbol) + "\n");
+        }
+
+        input.close();
+        symtab.close();
+        inter.close();
+        System.out.println("Pass-1 complete. Symbol table and intermediate file generated.");
+    }
+}

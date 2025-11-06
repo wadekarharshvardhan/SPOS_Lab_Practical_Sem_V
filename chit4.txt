@@ -1,0 +1,56 @@
+//Chit No. 4 — SPPU — LP-I
+
+//Design suitable data structures and implement Pass-I and Pass-II of a two-pass macro-processor.
+//The output of Pass-I (MNT, MDT and intermediate code file without any macro definitions) should be input for Pass-II.
+
+import java.io.*;
+import java.util.*;
+
+class MacroPass1 {
+    static List<String> MDT = new ArrayList<>();
+    static Map<String, Integer> MNT = new HashMap<>();
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader("macro_input.txt"));
+        BufferedWriter mntOut = new BufferedWriter(new FileWriter("mnt.txt"));
+        BufferedWriter mdtOut = new BufferedWriter(new FileWriter("mdt.txt"));
+        BufferedWriter intermediate = new BufferedWriter(new FileWriter("intermediate.txt"));
+
+        String line;
+        boolean inMacro = false;
+        String macroName = null;
+        int mdtIndex = 0;
+        while ((line = br.readLine()) != null) {
+            String trimmed = line.trim();
+            if (trimmed.equals("MACRO")) {
+                inMacro = true;
+                macroName = br.readLine().trim().split(" ")[0];
+                MNT.put(macroName, MDT.size());
+                MDT.add(br.readLine().trim()); // Macro prototype line (just after MACRO line)
+                continue;
+            }
+            if (inMacro) {
+                if (trimmed.equals("MEND")) {
+                    MDT.add("MEND");
+                    inMacro = false;
+                    macroName = null;
+                } else {
+                    MDT.add(trimmed);
+                }
+            } else {
+                intermediate.write(trimmed + "\n");
+            }
+        }
+        // Write MNT
+        for (String key : MNT.keySet())
+            mntOut.write(key + " " + MNT.get(key) + "\n");
+        // Write MDT
+        for (String m : MDT)
+            mdtOut.write(m + "\n");
+
+        br.close();
+        mntOut.close();
+        mdtOut.close();
+        intermediate.close();
+        System.out.println("Pass-1 Complete: Generated mnt.txt, mdt.txt, intermediate.txt");
+    }
+}

@@ -1,0 +1,11 @@
+START 100
+LOOP   MOVER  AREG, NUM
+       ADD    AREG, ONE
+       MOVEM  AREG, RESULT
+       SUB    AREG, TWO
+       BC     LOOP
+NUM    DC     2
+ONE    DC     1
+TWO    DC     1
+RESULT DS     1
+END

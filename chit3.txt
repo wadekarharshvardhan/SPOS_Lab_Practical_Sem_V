@@ -1,0 +1,39 @@
+//Chit No. 3 — SPPU — LP-I
+
+//Design suitable data structures and implement Pass-I of a two-pass macro-processor.
+//The output of Pass-I (MNT, MDT and intermediate code file without any macro definitions) should be input for Pass-II.
+
+import java.io.*;
+import java.util.*;
+
+class MacroProcessorPass1 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader input = new BufferedReader(new FileReader("macro_input.txt"));
+        BufferedWriter mnt = new BufferedWriter(new FileWriter("mnt.txt"));
+        BufferedWriter mdt = new BufferedWriter(new FileWriter("mdt.txt"));
+        BufferedWriter inter = new BufferedWriter(new FileWriter("intermediate.txt"));
+        
+        String line;
+        boolean inMacro = false;
+        while ((line = input.readLine()) != null) {
+            if (line.startsWith("MACRO")) {
+                inMacro = true;
+                String macroName = input.readLine();
+                mnt.write(macroName + "\n");
+                while ((line = input.readLine()) != null && !line.equals("MEND")) {
+                    mdt.write(line + "\n");
+                }
+                mdt.write("MEND\n");
+                inMacro = false;
+            } else if (!inMacro) {
+                inter.write(line + "\n");
+            }
+        }
+        
+        input.close();
+        mnt.close();
+        mdt.close();
+        inter.close();
+        System.out.println("Macro Pass-1 complete. MNT, MDT and intermediate code generated.");
+    }
+}

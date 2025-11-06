@@ -1,0 +1,52 @@
+//Chit No. 6 — SPPU — LP-I
+
+//Write a program to simulate CPU Scheduling Algorithm: SJF
+
+import java.util.*;
+
+class Process {
+    int pid, arrivalTime, burstTime, startTime, finishTime;
+
+    Process(int pid, int arrivalTime, int burstTime) {
+        this.pid = pid;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
+    }
+}
+
+public class SJF {
+    public static void main(String[] args) {
+        List<Process> processes = new ArrayList<>();
+        processes.add(new Process(1, 0, 7));
+        processes.add(new Process(2, 2, 4));
+        processes.add(new Process(3, 4, 1));
+        processes.add(new Process(4, 5, 4));
+
+        int clock = 0;
+        List<Process> completed = new ArrayList<>();
+        PriorityQueue<Process> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.burstTime));
+
+        while (!processes.isEmpty() || !pq.isEmpty()) {
+            for (Iterator<Process> it = processes.iterator(); it.hasNext(); ) {
+                Process p = it.next();
+                if (p.arrivalTime <= clock) {
+                    pq.offer(p);
+                    it.remove();
+                }
+            }
+            if (!pq.isEmpty()) {
+                Process current = pq.poll();
+                current.startTime = clock;
+                clock += current.burstTime;
+                current.finishTime = clock;
+                completed.add(current);
+            } else {
+                clock++;
+            }
+        }
+
+        for (Process p : completed) {
+            System.out.println("Process " + p.pid + ": Start = " + p.startTime + ", Finish = " + p.finishTime);
+        }
+    }
+}
