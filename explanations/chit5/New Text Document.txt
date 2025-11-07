@@ -1,0 +1,100 @@
+Certainly! Here's an explanation of the **FCFS (First-Come, First-Served)** CPU Scheduling simulation program in Java:
+
+---
+
+### **Overview:**
+This program simulates the FCFS scheduling algorithm, where processes are handled in the order they arrive. It calculates each process's start and finish times based on arrival and burst times.
+
+---
+
+### **Key Components:**
+
+#### 1. **Process Class:**
+```java
+class Process {
+    int pid, arrivalTime, burstTime, startTime, finishTime;
+
+    Process(int pid, int arrivalTime, int burstTime) {
+        this.pid = pid;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
+    }
+}
+```
+- Represents a process with:
+  - `pid`: Process ID
+  - `arrivalTime`: When the process arrives
+  - `burstTime`: Duration needed for execution
+  - `startTime`: When the process starts execution (to be calculated)
+  - `finishTime`: When the process completes execution (to be calculated)
+
+---
+
+### **Main Logic of the FCFS Class:**
+
+#### 2. **Creating Processes:**
+```java
+List<Process> processes = new ArrayList<>();
+processes.add(new Process(1, 0, 6));
+processes.add(new Process(2, 2, 4));
+processes.add(new Process(3, 4, 2));
+processes.add(new Process(4, 6, 5));
+```
+- Adds sample processes with specific arrival and burst times.
+
+#### 3. **Sorting by Arrival Time:**
+```java
+processes.sort(Comparator.comparingInt(p -> p.arrivalTime));
+```
+- Ensures processes are ordered based on arrival times for FCFS.
+
+#### 4. **Simulation Variables:**
+```java
+int clock = 0; // Tracks current time
+Queue<Process> queue = new LinkedList<>(); // Processes ready for execution
+List<Process> completed = new ArrayList<>(); // To store completed processes
+```
+
+#### 5. **Simulation Loop:**
+```java
+while (!processes.isEmpty() || !queue.isEmpty()) {
+    while (!processes.isEmpty() && processes.get(0).arrivalTime <= clock) {
+        queue.add(processes.remove(0));
+    }
+    if (!queue.isEmpty()) {
+        Process current = queue.poll();
+        current.startTime = clock; // Process starts now
+        clock += current.burstTime; // Move clock forward
+        current.finishTime = clock; // Process completes now
+        completed.add(current);
+    } else {
+        clock++; // Idle CPU if no process is ready
+    }
+}
+```
+- **Loads** all processes that have arrived by the current clock time into the queue.
+- **Processes** the first process in the queue:
+  - Sets its start time.
+  - Advances the clock by its burst time.
+  - Records its finish time.
+  - Adds it to completed list.
+- If no process is available, the clock increments (CPU idle time).
+
+#### 6. **Output:**
+```java
+for (Process p : completed) {
+    System.out.println("Process " + p.pid + ": Start = " + p.startTime + ", Finish = " + p.finishTime);
+}
+```
+- Prints start and finish times for each process.
+
+---
+
+### **Summary:**
+- The program sorts processes by arrival time.
+- Processes are scheduled in the order they arrive.
+- Calculates and displays each process's start and finish times based on the FCFS algorithm.
+
+---
+
+Would you like me to generate a diagram or add more features like turnaround time or waiting time calculations?

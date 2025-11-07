@@ -1,0 +1,108 @@
+Certainly! Here's a detailed explanation of what this **MacroPass1** Java program does, including the purpose of each part and the data structures involved:
+
+---
+
+### Overview:
+This program performs **Pass-I** of a two-pass macro-processor. Its main goals are:
+- To identify macro definitions in the source code.
+- To create and store the **Macro Name Table (MNT)**.
+- To store macro definitions in the **Macro Definition Table (MDT)**.
+- To produce an **intermediate code** file with macro definitions removed, preparing for macro expansion in Pass-II.
+
+---
+
+### Data Structures Used:
+- **MDT (Macro Definition Table):**  
+  - Implemented as a `List<String>` (`ArrayList`) to store all macro lines sequentially.
+  - Each macro's body lines are stored here, with "MEND" indicating the end of a macro.
+- **MNT (Macro Name Table):**  
+  - Implemented as a `Map<String, Integer>` (`HashMap`) where:
+    - **Key:** macro name (String)
+    - **Value:** index (integer) of the macro's starting line in MDT.
+  - This allows quick lookup of macro definitions during macro expansion.
+
+---
+
+### Step-by-step explanation:
+
+#### 1. **Opening Files:**
+```java
+BufferedReader br = new BufferedReader(new FileReader("macro_input.txt"));
+BufferedWriter mntOut = new BufferedWriter(new FileWriter("mnt.txt"));
+BufferedWriter mdtOut = new BufferedWriter(new FileWriter("mdt.txt"));
+BufferedWriter intermediate = new BufferedWriter(new FileWriter("intermediate.txt"));
+```
+- **Input source:** Reads the source code containing macro definitions.
+- **mnt.txt:** Stores macro names and their starting index in MDT.
+- **mdt.txt:** Stores all macro definitions (macro bodies).
+- **intermediate.txt:** Stores the source code with macro definitions removed.
+
+#### 2. **Processing the Input Source:**
+```java
+String line;
+boolean inMacro = false;
+String macroName = null;
+while ((line = br.readLine()) != null) {
+    String trimmed = line.trim();
+    if (trimmed.equals("MACRO")) {
+        inMacro = true;
+        macroName = br.readLine().trim().split(" ")[0];  // Read macro name
+        MNT.put(macroName, MDT.size());                   // Store macro name and current MDT index
+        MDT.add(br.readLine().trim());                     // Read macro prototype line (e.g., macro header)
+        continue;
+    }
+    if (inMacro) {
+        if (trimmed.equals("MEND")) {
+            MDT.add("MEND");  // Mark end of macro
+            inMacro = false;
+            macroName = null;
+        } else {
+            MDT.add(trimmed); // Store macro body line in MDT
+        }
+    } else {
+        intermediate.write(trimmed + "\n"); // Write non-macro lines to intermediate
+    }
+}
+```
+- **Detects macro definitions:**
+  - When a line is `"MACRO"`, it indicates the start of a macro.
+  - Next line is read as the macro prototype (e.g., macro header) and stored in MDT.
+  - The macro name is stored in MNT with the current MDT index.
+- **While inside a macro:**
+  - Macro lines are stored in MDT.
+  - When `"MEND"` is encountered, the macro ends.
+- **Outside macro definitions:**
+  - Lines are written directly to the intermediate code file.
+
+#### 3. **Writing the Tables:**
+```java
+for (String key : MNT.keySet())
+    mntOut.write(key + " " + MNT.get(key) + "\n");
+for (String m : MDT)
+    mdtOut.write(m + "\n");
+```
+- Stores the **MNT**: macro name and starting index.
+- Stores the **MDT**: macro bodies with "MEND" marking macro terminations.
+
+#### 4. **Closing files and finishing:**
+```java
+br.close();
+mntOut.close();
+mdtOut.close();
+intermediate.close();
+System.out.println("Pass-1 Complete: Generated mnt.txt, mdt.txt, intermediate.txt");
+```
+- Closes all files.
+- Prints a completion message.
+
+---
+
+### **Summary:**
+- **Identifies** macro definitions and stores macro headers and bodies in **MDT**.
+- **Records** macro names and their MDT starting positions in **MNT**.
+- **Creates** a macro-free intermediate code for further processing.
+- **Prepares** the data structures needed for macro expansion in Pass-II.
+
+---
+
+### Would you like a brief analogy or diagram to better understand this process?

@@ -1,0 +1,62 @@
+Sure! Here's a detailed yet simple explanation of what the code does and how it works:
+
+### What the code does:
+This Java program performs the **first pass** of a two-pass assembler for a pseudo-machine. Its main purpose is to:
+
+1. Read assembly language instructions from an input file.
+2. Identify labels (symbols) and record their addresses in a symbol table.
+3. Generate an intermediate file with addresses and instructions for the next pass.
+
+### How it works (step-by-step):
+
+1. **Initialization:**
+   - Opens "input.txt" for reading instructions.
+   - Creates two output files: "symtab.txt" (symbol table) and "intermediate.txt" (intermediate code).
+
+2. **Processing each line:**
+   - Reads each line from the input file.
+   - Splits the line into tokens (words).
+   - Checks if the line starts with "START":
+     - If yes, sets the `locctr` (location counter) to the specified starting address.
+   - Otherwise, if the line has a label (non-empty first token):
+     - Stores the label and current `locctr` in the symbol table (`symbolTable`).
+   - Writes the current address (`locctr`) and the instruction line to the intermediate file.
+   - Increments `locctr` by 1 to move to the next instruction address.
+
+3. **After processing all lines:**
+   - Writes the symbol table (labels and their addresses) into "symtab.txt".
+   - Closes all files and outputs a message indicating the first pass is complete.
+
+### Summary:
+- Finds labels in assembly code and records where they are located.
+- Prepares an intermediate file with addresses for the second pass.
+- Builds a symbol table for resolving labels later.
+
+If you want, I can also give a quick analogy or a diagram to make it clearer!
+
+Certainly! Here's a concise explanation of the Java code for your viva:
+
+This Java program simulates the first pass of a two-pass assembler for a pseudo-machine.
+
+- **Main Function:**  
+  It reads assembly instructions from "input.txt" and generates a symbol table ("symtab.txt") and an intermediate file ("intermediate.txt").
+
+- **Variables:**  
+  - `symbolTable`: A HashMap to store labels (symbols) and their addresses (location counter).  
+  - `locctr`: An integer representing the location counter, which tracks the address of instructions.
+
+- **Process:**
+  - Reads each line from the input file.  
+  - If the line contains "START", it initializes `locctr` with the specified starting address.  
+  - If the line has a label (non-empty first token), it adds the label and current `locctr` to `symbolTable`.  
+  - Writes the current `locctr` and line to the intermediate file for further processing.  
+  - Increments `locctr` by 1 for the next instruction.
+
+- **Output:**  
+  - After processing all lines, it writes the symbol table (labels and their addresses) to "symtab.txt".  
+  - Closes all files and indicates completion.
+
+**Overall Purpose:**  
+To build a symbol table and an intermediate file that will be used in the second pass to generate machine code.
+
+Would you like a simplified diagram or further breakdown?

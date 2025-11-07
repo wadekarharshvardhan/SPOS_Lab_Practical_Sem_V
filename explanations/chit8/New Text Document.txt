@@ -1,0 +1,79 @@
+Certainly! Here's an explanation of the **Round Robin Scheduling** simulation program in Java:
+
+---
+
+### **Overview:**
+This program simulates the **Round Robin Scheduling Algorithm**, where each process gets a fixed time slot called a quantum to execute. If a process isn't finished within its quantum, it is preempted and added back to the end of the queue to wait for its next turn.
+
+---
+
+### **Key Components:**
+
+#### 1. **Process Class:**
+```java
+class Process {
+    int id, burst, remaining;
+    Process(int id, int burst) {
+        this.id = id;
+        this.burst = burst;
+        this.remaining = burst;
+    }
+}
+```
+- Represents each process with:
+  - `id`: Process ID
+  - `burst`: Total burst time
+  - `remaining`: Remaining execution time (initially equal to burst time)
+
+---
+
+### **Main Logic:**
+
+#### 2. **Initialization:**
+```java
+int[] bursts = {5, 3, 8, 6}; // burst times of processes
+int quantum = 3; // time slice for each process
+Queue<Process> queue = new LinkedList<>();
+for (int i = 0; i < bursts.length; i++) queue.add(new Process(i + 1, bursts[i]));
+```
+- Defines burst times for four processes.
+- Sets the quantum (time slice) to 3 units.
+- Adds processes to a queue in order.
+
+#### 3. **Simulation Loop:**
+```java
+int time = 0;
+while (!queue.isEmpty()) {
+    Process p = queue.poll();
+    if (p.remaining > quantum) {
+        System.out.println("Process " + p.id + " executed from " + time + " to " + (time + quantum));
+        p.remaining -= quantum;
+        time += quantum;
+        queue.add(p);
+    } else {
+        System.out.println("Process " + p.id + " executed from " + time + " to " + (time + p.remaining));
+        time += p.remaining;
+        p.remaining = 0; // optional, process finished
+    }
+}
+```
+- **Fetches** the process at the front of the queue.
+- If the process's remaining time exceeds the quantum:
+  - Executes it for `quantum` units.
+  - Decreases its remaining time.
+  - Adds it back to the queue for further execution.
+- If the process can finish within the quantum:
+  - Executes it completely.
+  - Updates the current time.
+  - The process is considered complete and not re-added.
+
+---
+
+### **Summary:**
+- Implements **Round Robin Scheduling**.
+- Processes are executed in a cyclic order with fixed time slices.
+- The program outputs the start and end times for each process's execution slice.
+
+---
+
+Would you like me to extend this to compute waiting times, turnaround times, or show the Gantt chart?

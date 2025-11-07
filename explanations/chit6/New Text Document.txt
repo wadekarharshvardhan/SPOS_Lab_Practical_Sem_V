@@ -1,0 +1,100 @@
+Certainly! Here's an explanation of the **SJF (Shortest Job First)** CPU scheduling simulation program in Java:
+
+---
+
+### **Overview:**
+This program simulates the **Preemptive SJF Scheduling** (also called Shortest Job Next), where the CPU always selects the process with the smallest burst time from the set of processes that have arrived and are ready to execute.
+
+**Note:** The provided code is non-preemptive SJF, meaning once a process starts, it runs till completion. To implement preemptive SJF, additional logic would be needed to switch processes mid-execution.
+
+---
+
+### **Key Components:**
+
+#### 1. **Process Class:**
+```java
+class Process {
+    int pid, arrivalTime, burstTime, startTime, finishTime;
+
+    Process(int pid, int arrivalTime, int burstTime) {
+        this.pid = pid;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
+    }
+}
+```
+- Represents each process with:
+  - `pid`: Process ID
+  - `arrivalTime`: When the process arrives
+  - `burstTime`: Total execution time needed
+  - `startTime` and `finishTime`: To be calculated during scheduling
+
+---
+
+### **Main Logic of the SJF Class:**
+
+#### 2. **Creating Processes:**
+```java
+List<Process> processes = new ArrayList<>();
+processes.add(new Process(1, 0, 7));
+processes.add(new Process(2, 2, 4));
+processes.add(new Process(3, 4, 1));
+processes.add(new Process(4, 5, 4));
+```
+- Initializes a list of processes with specific arrival and burst times.
+
+#### 3. **Simulation Variables:**
+```java
+int clock = 0; // Current time
+List<Process> completed = new ArrayList<>(); // To store completed processes
+PriorityQueue<Process> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.burstTime));
+```
+- **clock:** Tracks current simulation time.
+- **completed:** Stores processes after they've finished execution.
+- **pq:** Priority queue sorted by burst time, always selecting the shortest process available.
+
+#### 4. **Simulation Loop:**
+```java
+while (!processes.isEmpty() || !pq.isEmpty()) {
+    for (Iterator<Process> it = processes.iterator(); it.hasNext(); ) {
+        Process p = it.next();
+        if (p.arrivalTime <= clock) {
+            pq.offer(p); // Add process to priority queue if arrived
+            it.remove(); // Remove from processes list
+        }
+    }
+    if (!pq.isEmpty()) {
+        Process current = pq.poll(); // Get process with shortest burst time
+        current.startTime = clock; // Start now
+        clock += current.burstTime; // Advance clock
+        current.finishTime = clock; // Finish now
+        completed.add(current); // Add to completed list
+    } else {
+        clock++; // Idle time if no process is ready
+    }
+}
+```
+- **Loads** all processes that have arrived into the priority queue.
+- **Selects** the process with the shortest burst time.
+- **Runs** it to completion, updating times.
+- If no process is ready, the CPU remains idle, and the clock advances.
+
+#### 5. **Output:**
+```java
+for (Process p : completed) {
+    System.out.println("Process " + p.pid + ": Start = " + p.startTime + ", Finish = " + p.finishTime);
+}
+```
+- Displays start and finish times for each process.
+
+---
+
+### **Summary:**
+- The program models non-preemptive SJF scheduling.
+- It dynamically adds processes to a priority queue as they arrive.
+- Always executes the shortest available process next.
+- Calculates and displays each process's start and finish times.
+
+---
+
+Would you like me to extend this to preemptive SJF or add calculations for turnaround and waiting times?

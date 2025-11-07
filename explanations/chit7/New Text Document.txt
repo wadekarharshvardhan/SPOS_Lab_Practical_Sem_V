@@ -1,0 +1,103 @@
+Certainly! Here's an explanation of the **Priority Scheduling** CPU scheduling simulation program in Java:
+
+---
+
+### **Overview:**
+This program simulates **Non-Preemptive Priority Scheduling**, where the CPU selects the process with the highest priority (lowest priority number) among all processes that have arrived and are ready to execute.
+
+**Note:** This implementation is non-preemptive, meaning once a process starts executing, it runs to completion.
+
+---
+
+### **Key Components:**
+
+#### 1. **Process Class:**
+```java
+class Process {
+    int pid, arrivalTime, burstTime, priority, startTime, finishTime;
+
+    Process(int pid, int arrivalTime, int burstTime, int priority) {
+        this.pid = pid;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
+        this.priority = priority;
+    }
+}
+```
+- Each process has:
+  - `pid`: Process ID
+  - `arrivalTime`: When it arrives
+  - `burstTime`: How long it needs to run
+  - `priority`: Priority level (lower value = higher priority)
+  - `startTime` and `finishTime`: To be calculated during scheduling
+
+---
+
+### **Main Logic of the PriorityScheduling Class:**
+
+#### 2. **Creating Processes:**
+```java
+List<Process> processes = new ArrayList<>();
+processes.add(new Process(1, 0, 5, 2));
+processes.add(new Process(2, 1, 3, 1));
+processes.add(new Process(3, 2, 8, 4));
+processes.add(new Process(4, 3, 6, 3));
+```
+- Initializes a list of processes with specific arrival times, burst times, and priorities.
+
+#### 3. **Simulation Variables:**
+```java
+int clock = 0; // Current time
+List<Process> completed = new ArrayList<>(); // To store completed processes
+PriorityQueue<Process> pq = new PriorityQueue<>(
+    Comparator.comparingInt((Process p) -> p.priority).thenComparingInt(p -> p.arrivalTime));
+```
+- **clock:** Tracks current simulation time.
+- **completed:** List to store processes after they finish.
+- **pq:** Priority queue sorted primarily by `priority`, then by `arrivalTime` to break ties.
+
+#### 4. **Simulation Loop:**
+```java
+while (!processes.isEmpty() || !pq.isEmpty()) {
+    for (Iterator<Process> it = processes.iterator(); it.hasNext(); ) {
+        Process p = it.next();
+        if (p.arrivalTime <= clock) {
+            pq.offer(p); // Add to ready queue if arrived
+            it.remove(); // Remove from waiting list
+        }
+    }
+    if (!pq.isEmpty()) {
+        Process current = pq.poll(); // Select process with highest priority
+        current.startTime = clock;
+        clock += current.burstTime; // Update clock
+        current.finishTime = clock;
+        completed.add(current);
+    } else {
+        clock++; // Idle time if no process is ready
+    }
+}
+```
+- **Loads** all processes that have arrived into the priority queue.
+- **Selects** process with the highest priority (lowest priority number).
+- **Runs** it to completion, updating start and finish times.
+- If no process is ready, the CPU remains idle, and the clock increments.
+
+#### 5. **Output:**
+```java
+for (Process p : completed) {
+    System.out.println("Process " + p.pid + ": Start = " + p.startTime + ", Finish = " + p.finishTime + ", Priority = " + p.priority);
+}
+```
+- Displays start, finish times, and priority for each process.
+
+---
+
+### **Summary:**
+- Implements **non-preemptive priority scheduling**.
+- Processes are loaded into a priority queue as they arrive.
+- The process with the highest priority is always executed next.
+- Calculates and displays execution times along with process priority.
+
+---
+
+Would you like me to modify this for preemptive priority scheduling or include calculations for waiting and turnaround times?

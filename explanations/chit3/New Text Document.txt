@@ -1,0 +1,83 @@
+Certainly! Here's a detailed explanation of what this **MacroProcessorPass1** Java program does, along with the purpose of each part:
+
+---
+
+### Overview:
+This program performs **Pass-I** of a two-pass macro-processor. Its goal is to identify macro definitions in the input source code, and generate three important components:
+- **MNT (Macro Name Table):** a list of macro names.
+- **MDT (Macro Definition Table):** stores the actual macro definitions (macro body).
+- **Intermediate code:** the source code with macro definitions removed, ready for further processing in Pass-II.
+
+---
+
+### Step-by-step explanation:
+
+#### 1. **Opening Files:**
+```java
+BufferedReader input = new BufferedReader(new FileReader("macro_input.txt"));
+BufferedWriter mnt = new BufferedWriter(new FileWriter("mnt.txt"));
+BufferedWriter mdt = new BufferedWriter(new FileWriter("mdt.txt"));
+BufferedWriter inter = new BufferedWriter(new FileWriter("intermediate.txt"));
+```
+- **input:** Reads the source code containing macro definitions.
+- **mnt:** Will store macro names.
+- **mdt:** Will store macro bodies (definitions).
+- **inter:** Stores source code with macro definitions removed (intermediate code).
+
+#### 2. **Processing the Input Source:**
+```java
+String line;
+boolean inMacro = false;
+while ((line = input.readLine()) != null) {
+    if (line.startsWith("MACRO")) {
+        inMacro = true;
+        String macroName = input.readLine();
+        mnt.write(macroName + "\n");
+        while ((line = input.readLine()) != null && !line.equals("MEND")) {
+            mdt.write(line + "\n");
+        }
+        mdt.write("MEND\n");
+        inMacro = false;
+    } else if (!inMacro) {
+        inter.write(line + "\n");
+    }
+}
+```
+- Reads each line of the source code.
+- **Detects macro definitions:**
+  - When a line starts with `"MACRO"`, it indicates the start of a macro.
+  - The next line is assumed to be the macro name; it is stored in the **MNT**.
+  - Continues reading subsequent lines as part of the macro body until it encounters `"MEND"`.
+  - Stores each macro body line in the **MDT**.
+- **Outside macro definitions:**
+  - Any line not part of a macro definition (not between `"MACRO"` and `"MEND"`) is written to the **intermediate code** file.
+
+**Purpose:** To separate macro definitions from the main program, storing them separately, and prepare a macro-free source code for further processing.
+
+#### 3. **Closing Files and Finishing:**
+```java
+input.close();
+mnt.close();
+mdd.close();
+inter.close();
+System.out.println("Macro Pass-1 complete. MNT, MDT and intermediate code generated.");
+```
+- Closes all files.
+- Prints a message indicating completion.
+
+---
+
+### **Summary:**
+- **Reads** source code with macros.
+- **Stores** macro names in **MNT**.
+- **Stores** macro bodies in **MDT**.
+- **Outputs** a macro-free version of the source code in the **intermediate** file.
+
+---
+
+### **In brief:**
+This pass identifies macro definitions, saves macro information separately, and prepares the code for expansion in Pass-II, making macro processing manageable and organized.
+
+---
+
+Would you like me to prepare a simple analogy or diagram to visualize this process?

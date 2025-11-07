@@ -1,0 +1,77 @@
+Certainly! Here's a detailed breakdown of what each part of the **Pass2Assembler** Java program does, including the functions and their purposes:
+
+---
+
+### Overview:
+This program performs **Pass-II** of a two-pass assembler. It takes the output from **Pass-I** (the intermediate code and symbol table) and generates the final **machine code** by replacing symbolic labels with their corresponding memory addresses.
+
+---
+
+### Step-by-step explanation:
+
+#### 1. **Opening Files:**
+```java
+BufferedReader inter = new BufferedReader(new FileReader("intermediate.txt"));
+BufferedReader symtab = new BufferedReader(new FileReader("symtab.txt"));
+BufferedWriter machine = new BufferedWriter(new FileWriter("machinecode.txt"));
+```
+- **inter** reads the intermediate code generated in Pass-I.
+- **symtab** reads the symbol table (labels and addresses).
+- **machine** writes the final machine code.
+
+#### 2. **Building the Symbol Table Map:**
+```java
+Map<String, Integer> symbolTable = new HashMap<>();
+String line;
+while ((line = symtab.readLine()) != null) {
+    String[] tokens = line.split("\\s+");
+    symbolTable.put(tokens[0], Integer.parseInt(tokens[1]));
+}
+```
+- Reads each line of the symbol table.
+- Splits each line into tokens: label and address.
+- Stores them in a HashMap (`symbolTable`) where:
+  - **Key:** label (symbol)
+  - **Value:** corresponding address (integer)
+
+**Purpose:** Quick lookup of label addresses during code translation.
+
+#### 3. **Processing the Intermediate Code:**
+```java
+while ((line = inter.readLine()) != null) {
+    String[] tokens = line.split("\\s+");
+    // Example: Replace symbol with address if present
+    if (tokens.length > 2 && symbolTable.containsKey(tokens[2])) {
+        tokens[2] = String.valueOf(symbolTable.get(tokens[2]));
+    }
+    machine.write(String.join(" ", tokens) + "\n");
+}
+```
+- Reads each instruction line from "intermediate.txt".
+- Splits the line into tokens: typically **address**, **instruction**, **operand**.
+- Checks if the operand (usually in `tokens[2]`) is a symbol:
+  - If yes, replaces it with its address from `symbolTable`.
+- Writes the updated line (now with addresses instead of symbols) to the output file ("machinecode.txt").
+
+**Purpose:** Convert symbolic assembly code to final machine code by resolving labels.
+
+#### 4. **Closing Files and Finishing:**
+```java
+inter.close();
+symtab.close();
+machine.close();
+System.out.println("Pass-2 complete. Machine code generated.");
+```
+- Closes all open files.
+- Prints a message indicating that the process is complete.
+
+---
+
+### Summary:
+- **Reads** the symbol table and intermediate code.
+- **Replaces** symbolic labels in the instructions with actual memory addresses.
+- **Outputs** the final machine code ready for execution.
+
+---
+
+Would you like me to prepare a brief analogy or diagram to make this clearer?
