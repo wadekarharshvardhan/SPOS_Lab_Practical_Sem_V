@@ -1,17 +1,30 @@
-# Ubuntu
+#UBUNTU_CLEAR_USB_LOG
+
+# Switch to root user
+sudo su
+
+# View kernel messages
 dmesg
+
+# Clear kernel ring buffer (requires root)
 sudo dmesg --clear
 
+# Search for 'usb' entries in kernel log (may need root)
 sudo cat /var/log/kern.log | grep usb
-sudo rm -rf /var/log/kern*
-#old log files
 
+# Remove old kernel log files (be cautious)
+sudo rm -rf /var/log/kern*
+
+# View compressed older kernel logs for 'usb'
 sudo zcat /var/log/kern.log.2.gz | grep usb
 
+# Search for 'usb' entries in system log
 sudo cat /var/log/syslog | grep usb
+
+# Remove old syslog files
 sudo rm -rf /var/log/syslog*
 
+# Clear bash history
 cat /dev/null > ~/.bash_history && history -c
 
-
-##Copy and paste every command as it is and make sure you are root user for that use sudo su
+#thank_me later 
